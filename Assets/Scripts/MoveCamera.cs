@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DestoryOnHit : MonoBehaviour
+public class MoveCamera : MonoBehaviour
 {
     // Start is called before the first frame update
+    public Transform cameraPosition;
     void Start()
     {
         
@@ -13,14 +14,6 @@ public class DestoryOnHit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Ball")
-        {
-            Destroy(gameObject);
-        }
+        transform.position = cameraPosition.position;
     }
 }

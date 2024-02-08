@@ -1,16 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class ThrowBall : MonoBehaviour
 {
     public GameObject ballObject;
-    public float mouseSensitivity = 7.0f;
     public float power = 25f;
     // Start is called before the first frame update
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
@@ -21,13 +20,6 @@ public class ThrowBall : MonoBehaviour
         }
     }
 
-    void FixedUpdate() 
-    {
-        float mouseVert = Input.GetAxis("Mouse Y");
-        Vector3 rotation = new Vector3(-mouseVert, 0f, 0f);
-        transform.Rotate(rotation * mouseSensitivity, Space.Self);
-    }
-
     void Shoot()
     {   
         RaycastHit hit;
@@ -36,7 +28,18 @@ public class ThrowBall : MonoBehaviour
         }
 
         Debug.DrawRay(transform.position, transform.forward, Color.green, 1.0f, true);
-        GameObject newBall = Instantiate(ballObject, transform.position + new Vector3(0, .1f, .1f), transform.rotation);
-        newBall.GetComponent<Rigidbody>().AddRelativeForce(0, 0, power);
+        
+        GameObject ball = BallPool.sharedInstance.GetPooledObject();
+        
+        ball.transform.position = transform.position;
+        ball.transform.rotation = transform.rotation;
+        ball.SetActive(true);
+
+
+        if (ball != null) {
+            Rigidbody rb = ball.GetComponent<Rigidbody>();
+            rb.angularVelocity = Vector3.zero; rb.velocity = Vector3.zero;
+            rb.AddRelativeForce(new Vector3(0,0,power));
+        }
     }
 }
